@@ -91,6 +91,7 @@ class ProductsController extends Controller
                 })
                 ->addColumn('action', function ($product) {
                     $action = '<a href="products/make-copy/'. Hashids::encode($product->id).'" class="text-success" data-toggle="tooltip" title="Make a Copy"><i class="fa fa-lg fa-copy"></i></a>';
+                    $action .= '<a href="product/offers/'. Hashids::encode($product->id).'" class="" data-toggle="tooltip" title="Product Offers"><i class="fa fa-lg fa-gift"></i></a>';
                     if(Auth::user()->can('edit products'))
                         $action .= '<a href="products/'. Hashids::encode($product->id).'/edit" class="text-primary" data-toggle="tooltip" title="Edit Product"><i class="fa fa-lg fa-edit"></i></a>';
                     if(Auth::user()->can('view product stocks'))
