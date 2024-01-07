@@ -16,6 +16,15 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::resource('categories', 'CategoriesController');
     Route::get('get-store-categories/{store_id}','CategoriesController@getStoreCategories');
     Route::resource('products', 'ProductsController');
+
+    Route::get('product/offers/{product_id}','OffersController@productOffers');
+    Route::get('product/offers/{product_id}/create','OffersController@createProductOffers');
+    Route::post('product/offers/{offer_id}','OffersController@storeProductOffers');
+    Route::delete('product/delete-offer/{offer_id}','OffersController@deleteOffer');
+    Route::get('product/offers/{offer_id}/edit','OffersController@editProductOffer');
+    Route::patch('products/update-offer/{offer_id}','OffersController@updateProductOffer');
+
+
     Route::patch('products/update-store/{product_id}', 'ProductsController@updateStore');
     Route::patch('products/update-combo-products/{product_id}', 'ProductsController@updateComboProducts');
     Route::delete('products/remove-variant/{variant_id}','ProductsController@removeVariant');

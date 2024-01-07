@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Offer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use  Hashids,Illuminate\Support\Facades\File;
@@ -242,6 +243,15 @@ class Product extends Model
     public function shipping()
     {
         return $this->belongsTo(Shipping::class);
+    }
+
+    /**
+     * belongs To relation Offers
+     */
+
+    public function Offers()
+    {
+        return $this->hasMany(Offer::class, 'product_id');
     }
 
     /**
