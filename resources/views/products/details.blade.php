@@ -45,7 +45,7 @@
                             @if(@$product->category_products[0]->category->name)
                                 <li class="trail-item">
                                     <a href="#" id="">{{ $product->category_products[0]->category->name }}<i class="fa fa-angle-right"></i></a>
-                                   
+
                                 </li>
                             @endif
                             @if(@$product->category_products[1]->category->name)
@@ -54,7 +54,7 @@
                                 </li>
                             @endif
                         @endif
-										 
+
 									</ul>
 
 									<!-- <ul class="list-unstyled breadcrumbs">
@@ -96,7 +96,21 @@
                                             <label class="form-check-label" for="inlineRadio2">Pack Of 10</label>
                                         </div>
                                     </div>
-                                   
+                                    @if(Auth::check() && Auth::user()->type == 'retailer')
+                                        @if($product->offers)
+                                            @foreach($product->offers as $offer)
+                                                <div class="row">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadio1"  price-product="{{$offer->price * $offer->quantity}}" offer-id="{{$offer->id}}" value="pack" checked>
+                                                        <label class="form-check-label" for="inlineRadio1">Pack of {{$offer->quantity}} - {{$offer->price}}</label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    @endif
+                                    <input id="offer_id" type="hidden" value="" />
+
+
 									<div class="text-holder">
                                         <span class="price">
                                         @if(Auth::check() && Auth::guard('web')->check() && Auth::user()->type != 'retailer')
@@ -107,7 +121,7 @@
                                                     <i class="fa fa-gbp" id="product-price">{{ $product->discountedPrice }} </i>
                                             @endif
                                         @else
-                                            @if($product->discount_type>0) 
+                                            @if($product->discount_type>0)
                                                 <!---    <i class="fa fa-gbp" id="product-price">{{ number_format($product->price,2,'.','') }}</i> !--->
 
                                             @endif
@@ -126,7 +140,7 @@
 											</div>
 
 											<div class="row-val">
-												<button type="button" id="add-to-cart" data-id="{{$product->id}}"   <?php if($product->store_products[0]->quantity > 0) {echo '';} else {echo 'disabled=disabled';}?>>ADD TO CART</button>
+												<button type="button" id="add-to-cart" data-id="{{$product->id}}" offer-id=""   <?php if($product->store_products[0]->quantity > 0) {echo '';} else {echo 'disabled=disabled';}?>>ADD TO CART</button>
 											</div>
 										</fieldset>
 									</form>
@@ -153,16 +167,16 @@
                                     <div id="tab2" class="js-tab-hidden">
 										<p>{!! $product->tecnical_specs !!}</p>
 									</div>
-									
+
 									<div id="tab3" class="js-tab-hidden">
 										<div class="product-comment">
 											<div id="comment">
 
 											</div>
-											 
-											
+
+
 											<form  method="POST" class="p-commentform">
-											 
+
 												<fieldset>
 													<h2>Add  Comment</h2>
 													<div class="mt-row">
@@ -209,7 +223,7 @@
 											<div class="box">
 												<div class="b1">
 													<div class="b2">
-														
+
 														<a href=""><img src="{{$product->images}}" alt="image description"></a>
 														<!-- <span class="caption">
 															<span class="new">NEW</span>
@@ -242,7 +256,7 @@
 				</div>
 			</main>
 
-			
+
 
 @endsection
 @section('scripts')
@@ -258,7 +272,10 @@
             getProductReviews(productID);
             $(".changeProductPack").on("change",function(){
                var price = $(this).attr('price-product')
+               var offer_id = $(this).attr('offer-id')
+
                 $("#product-price").text(price);
+                $("#offer_id").val(offer_id);
             });
 
             $("#addreview").on("click",function(){
@@ -439,6 +456,7 @@
                     return  false
                 }
                 var id = $(this).attr('data-id');
+                var offerId = $("#offer_id").val();
                 var qty = $('.qty').val();
                 var productPack = $(".changeProductPack:checked").val();
 
@@ -446,8 +464,11 @@
                 $.ajax({
                     url: '{{ url('cart-add') }}',
                     method: "POST",
-                    data: {id: id, quantity: qty,
-                        productPack:productPack
+                    data: {
+                        id: id,
+                        quantity: qty,
+                        productPack:productPack,
+                        offerId:offerId
                     },
                     success: function (response) {
                         if(response.status){
@@ -508,7 +529,7 @@
 
                 },
                 success: function (response) {
-				 
+
                     $("#comment").html('');
 					$("#reviewCount").text(`REVIEW (${response.data.length})`)
                     if(response.data.length>0){
@@ -529,9 +550,9 @@
 												</div>
 												<p>${value.description}</p>
 											</div>`;
-                            
+
                         });
-						
+
                         $("#comment").append(html);
                     }
                 }
