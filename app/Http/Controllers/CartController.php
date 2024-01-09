@@ -11,6 +11,7 @@ use App\Models\ShoppingCart;
 use App\Models\TaxRate;
 use App\Models\Transaction;
 use App\Models\WholesellerWallet;
+use App\Offer;
 use App\User;
 use Cart;
 use App\Models\Product;
@@ -35,12 +36,9 @@ class CartController extends Controller
     /*add to cart*/
     public function add(Request $request)
     {
-
         // add item to cart
         if(Auth::id()){
             $product = Product::with('shipping')->find($request->id);
-          
-
             // if product has variant
             if($product->product_id != 0 ){
                 $data = getDefaultVariant($product->product_id);
@@ -51,8 +49,6 @@ class CartController extends Controller
           
             // set quantity
             $qty = ($request->quantity)??1;
-
-
             // add shipping charges condition
 
             $shipping = new \Darryldecode\Cart\CartCondition(array(
@@ -64,17 +60,25 @@ class CartController extends Controller
             ));
             $price = $product->discountedPrice;
             if($request->has('productPack') and $request->productPack ==='pack'){
-                $price = $price * 10;
+                // update quanity and price with offer and without offer
+                if(!$request->offerId)
+                {
+                    $price = $price * 10;
+                } else {
+                    $offer = Offer::with('product')->find($request->offerId);
+                    $price = $offer->price * $offer->quantity;
+                }
             }
+
+
             $productData = array(
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $price,
                 'quantity' => $qty,
-                'attributes' => array(),
+                'attributes' => ($request->offerId)?['offer_id' => $request->offerId]:array(),
                 'conditions' => $shipping
             );
-
             $cart = ShoppingCart::where(['user_id' => Auth::id(), 'payment_status' => 'pending'])->first();
 
             if(Auth::user()->type != 'dropshipper' || !@$cart->courierAssignment || @$cart->courierAssignment->status == 3|| @$cart->courierAssignment->status == 4  )
@@ -112,13 +116,13 @@ class CartController extends Controller
 
         $count          = (Auth::id())?Cart::session(Auth::id())->getContent()->count():Cart::getContent()->count();
         $cartContents   = (Auth::id())?Cart::session(Auth::id())->getContent():Cart::getContent();
-        
+
         if (Auth::user()->type == 'dropshipper'){
             $subTotal=0;
         }else{
             $subTotal       = (Auth::id())?Cart::session(Auth::id())->getSubTotal():Cart::getSubTotal();
         }
-      
+
         $cart=ShoppingCart::where(['user_id' => Auth::id(), 'payment_status' => 'pending'])->first();
 
         if(!$cart){
@@ -132,15 +136,12 @@ class CartController extends Controller
         $woriginalPrice = 0;
         $wsubtotal = 0;
         $total_shipment_charges = 0;
-        
+
         foreach($cartContents as $item){
-
-            
-
             if (Auth::user()->type != 'retailer') {
                 $subTotal += $item->getPriceSum();
             }
-           
+
             $productDetails = getProductDetails($item->id);
             if($productDetails) {
                 $originalPrice += ($productDetails->price * $item->quantity);

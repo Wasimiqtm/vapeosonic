@@ -185,7 +185,8 @@ class ProductsController extends Controller
                 'product_attributes.variant',
                 'products.product_images',
                 'products.product_variants',
-                'brand'
+                'brand',
+                'offers'
             ])->show();
 
         if($id>0){
