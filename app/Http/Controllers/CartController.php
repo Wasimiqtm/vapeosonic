@@ -66,7 +66,8 @@ class CartController extends Controller
                     $price = $price * 10;
                 } else {
                     $offer = Offer::with('product')->find($request->offerId);
-                    $price = $offer->price * $offer->quantity;
+                    $price = $offer->price;
+                    $qty = $offer->quantity * $qty;
                 }
             }
 
