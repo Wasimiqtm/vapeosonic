@@ -76,7 +76,7 @@ class OffersController extends Controller
     {
         $productId = decodeId($id);
         $this->validate($request, [
-            'name' => 'required|max:50',
+            'name' => 'unique:offers,name|required|max:50',
             'quantity' => 'required',
             'price' => 'required',
             'reward_points' => 'required',
@@ -142,9 +142,8 @@ class OffersController extends Controller
     public function updateProductOffer(Request $request, $id)
     {
         $offerId = decodeId($id);
-
         $this->validate($request, [
-            'name' => 'required|max:50',
+            'name' => 'required|max:50|unique:offers,name,' . $offerId,
             'quantity' => 'required',
             'price' => 'required',
             'reward_points' => 'required',
