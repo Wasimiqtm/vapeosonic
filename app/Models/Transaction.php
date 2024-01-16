@@ -18,6 +18,8 @@ class Transaction extends Model
         'cart_details',
         'trans_details',
         'is_latest',
+        'used_reward_points',
+        'earned_reward_points',
         'note'
     ];
 
