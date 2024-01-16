@@ -214,6 +214,14 @@
                                     </li>
                                     <li>
                                         <div class="txt-holder">
+                                            <strong class="title sub-title pull-left">CREDIT AWARDED</strong>
+                                            <div class="txt pull-right">
+                                                <span><i class="fa fa-gbp"></i> {{$getRewardDetails['checkout_reward_points']}}</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="txt-holder">
                                             <strong class="title sub-title pull-left">SHIPPING</strong>
                                             <div class="txt pull-right">
                                                 <span>Free Shipping</span>
@@ -231,12 +239,20 @@
                                         </div>
 
                                     </li>
+                                    <li>
+                                        <div class="txt-holder">
+                                            <strong class="title sub-title pull-left">WALLET DISCOUNT</strong>
+                                            <div class="txt pull-right">
+                                                <span><i class="fa fa-gbp"></i> {{$getRewardDetails['user_reward_points']}}</span>
+                                            </div>
+                                        </div>
+                                    </li>
 
                                     <li style="border-bottom: none;">
                                         <div class="txt-holder">
                                             <strong class="title sub-title pull-left">ORDER TOTAL</strong>
                                             <div class="txt pull-right">
-                                                <span><i class="fa fa-gbp"></i> {{ $subTotal }}</span>
+                                                <span><i class="fa fa-gbp"></i>  {{($subTotal - $getRewardDetails['user_reward_points'] > 0) ? $subTotal - $getRewardDetails['user_reward_points'] : 0}}</span>
                                             </div>
                                         </div>
                                     </li>
@@ -249,7 +265,7 @@
                             <div id="paypal-button-container"></div>
                             @if (Auth::user()->type == 'wholesaler' || Auth::user()->type == 'dropshipper')
                                     <?php $totalAmountWallet = getWholsellerDataWallet(Auth::user()->id);
-                                    $subtotals = $subTotal;
+                                    $subtotals = $subTotal - $getRewardDetails['user_reward_points'];
                                     ?>
 
                                 <div class="form-box">
@@ -363,7 +379,7 @@
 
         function PayPalPayment() {
             // var amount = "{{ Auth::id() ? Cart::session(Auth::id())->getSubTotal() ?? 0 : 0 }}";
-            var amount = "{{ $subTotal }}";
+            var amount = "{{ $subTotal - $getRewardDetails['user_reward_points'] }}";
             paypal.Buttons({
                 style: {
                     color: 'blue',

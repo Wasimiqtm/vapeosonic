@@ -57,7 +57,7 @@ $vatCharges = getVatCharges();
            $item_sub_total = $unit_price * $single_item['quantity'];
            $subtotal = ($subtotal + $item_sub_total);
            $item_discount = (@$single_item['item_discount'])?$single_item['item_discount']:0;
-           $item_sub_total = $item_sub_total - $item_discount;
+           $item_sub_total = $item_sub_total - $item_discount - @$myOrder->used_reward_points;
             if(Auth::user()->type == 'retailer'){
                 $item_sub_total = $item_sub_total;
             }else{

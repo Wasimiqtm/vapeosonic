@@ -172,6 +172,14 @@
                     </li>
                     <li>
                         <div class="txt-holder">
+                            <strong class="title sub-title pull-left">Credit Awarded</strong>
+                            <div class="txt pull-right">
+                                <span><i class="fa fa-gbp"></i> {{$getRewardDetails['checkout_reward_points']}}</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="txt-holder">
                             <strong class="title sub-title pull-left">Vat</strong>
                             <div class="txt pull-right">
                                 <span><i class="fa fa-gbp"></i> {{number_format($vatAmount,2)}}</span>
@@ -187,11 +195,19 @@
                             </div>
                         </div>
                     </li>
+                    <li>
+                        <div class="txt-holder">
+                            <strong class="title sub-title pull-left">Wallet Discount</strong>
+                            <div class="txt pull-right">
+                                <span><i class="fa fa-gbp"></i> {{$getRewardDetails['user_reward_points']}}</span>
+                            </div>
+                        </div>
+                    </li>
                     <li style="border-bottom: none;">
                         <div class="txt-holder">
                             <strong class="title sub-title pull-left">CART TOTAL</strong>
                             <div class="txt pull-right">
-                                <span><i class="fa fa-gbp"></i> {{$subTotal}}</span>
+                                <span><i class="fa fa-gbp"></i> {{($subTotal - $getRewardDetails['user_reward_points'] > 0) ? $subTotal - $getRewardDetails['user_reward_points'] : 0}}</span>
                             </div>
                         </div>
                     </li>
