@@ -32,7 +32,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'email', 'password','phone', 'type', 'vat_number', 'company_name','wholesaler_type','quantity_1','percentage_1','quantity_2','percentage_2','quantity_3','percentage_3','is_active','mark_up','is_latest','address', 'max_limit'
+        'first_name', 'last_name', 'email', 'password','phone', 'type', 'vat_number', 'company_name','wholesaler_type','quantity_1','percentage_1','quantity_2','percentage_2','quantity_3','percentage_3','is_active','mark_up','is_latest','address', 'max_limit', 'reward_points'
     ];
 
     /**
