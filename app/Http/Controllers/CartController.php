@@ -27,10 +27,8 @@ use Illuminate\Support\Facades\Log;
 class CartController extends Controller
 {
     public function cart()
-    {      
-
+    {
         return view('cart.cart');
-
     }
 
     /*add to cart*/
@@ -207,8 +205,9 @@ class CartController extends Controller
         if(request()->has('from')){
             return view('cart.home_cart', compact('vatCharges','cartContents','couriers','total_shipment_charges','cart','count', 'subTotal', 'cartSum', 'originalPrice'));
         }
+        $getRewardDetails = getRewardDetails();
 
-        return view('cart.cartDetails', compact('vatCharges','couriers','total_shipment_charges','cart','count', 'cartContents', 'subTotal', 'cartSum', 'originalPrice'));
+        return view('cart.cartDetails', compact('vatCharges','couriers','total_shipment_charges','cart','count', 'cartContents', 'subTotal', 'cartSum', 'originalPrice', 'getRewardDetails'));
     }
 
     public function cartDetails1($id)
@@ -586,10 +585,17 @@ class CartController extends Controller
         $vatCharges=TaxRate::select('rate')->where('id',1)->first();
         $vatCharges=(int)$vatCharges->rate;
 
-        
-        //$subTotal = number_format($subTotal,2);
+        $getRewardDetails = getRewardDetails();
 
-        return view('cart.makePayment', compact('vatCharges','total_shipment_charges','userData', 'cartContents', 'subTotal', 'cartSum', 'originalPrice'));
+        /*Proceed to checkout only if the purchase amount is greater than reward amount*/
+        $totalToPay = number_format($subTotal+($subTotal*$vatCharges)/100,2);
+        if($getRewardDetails['user_reward_points'] >= $totalToPay)
+        {
+            Session::flash('error', 'Your purchase amount should be greater than your wallet amount');
+            return redirect()->back();
+        }
+
+        return view('cart.makePayment', compact('vatCharges','total_shipment_charges','userData', 'cartContents', 'subTotal', 'cartSum', 'originalPrice', 'getRewardDetails'));
     }
  
 
@@ -907,6 +913,9 @@ class CartController extends Controller
             }
             $this->updateUserStatus();
 //            make transaction entry
+
+            $getRewardDetails = getRewardDetails();
+
             $transaction['user_id']   = Auth::id();
             $transaction['cart_id']   = $data->id;
             $transaction['qty']       = $totalQty;
@@ -916,6 +925,12 @@ class CartController extends Controller
             $transaction['paypal_id'] = $request->trans_id;
             $transaction['amount']    = $request->amount;
             $transaction['is_latest']  = 1;
+
+//            save used and earned reward points at completion of a transaction
+//            $transaction['used_reward_points']  = (48 > $getRewardDetails['user_reward_points']) ? $getRewardDetails['user_reward_points'] : 48;
+            $transaction['used_reward_points']  = $getRewardDetails['user_reward_points'];
+            $transaction['earned_reward_points']  = $getRewardDetails['checkout_reward_points'];
+
             $transaction['trans_details']  = serialize(
                 [
                     'trans_id'=>$request->trans_id,
@@ -951,6 +966,11 @@ class CartController extends Controller
                 $this->sendPaymentSuccessEmail('','admin');
             ShoppingCart::whereId($data->id)->update(array('payment_status' => 'complete'));
             (Auth::id())?Cart::session(Auth::id())->clear():Cart::clear();
+
+//            update user reward points in users table
+//            $updatedUserRewards = (48 > $getRewardDetails['user_reward_points']) ? $getRewardDetails['checkout_reward_points'] : ($getRewardDetails['user_reward_points'] - 48 + $getRewardDetails['checkout_reward_points']);
+            User::whereId(Auth::id())->update(array('reward_points' => $getRewardDetails['checkout_reward_points']));
+
             Session::flash('success', 'Your order has been placed successfully');
             return ['status' => true ,'message' => 'Your have made payment successfully.'];
         }else{
@@ -993,7 +1013,8 @@ class CartController extends Controller
     function getMyOrders(Request $request)
     {
         $myOrders = Transaction::with(['cart', 'purchasedItems.product.product_images'])->where('user_id', Auth::id())->get();
-        return view('cart.getMyOrders', compact('myOrders'));
+        $getRewardDetails = getRewardDetails();
+        return view('cart.getMyOrders', compact('myOrders', 'getRewardDetails'));
     }
 
     /*transaction details view*/
