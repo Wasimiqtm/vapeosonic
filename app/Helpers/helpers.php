@@ -1903,4 +1903,24 @@ if(!function_exists('getUserWishListCount')){
 }
 }
 
+if (! function_exists('getRewardDetails')) {
+
+
+
+    function getRewardDetails()
+    {
+        $cartContents = (Auth::id())?Cart::session(Auth::id())->getContent():Cart::getContent();
+        $rewardPoins = 0;
+        foreach($cartContents as $item)
+        {
+            if($item->attributes->has('offer_id'))
+            {
+                $offer = \App\Offer::find($item->attributes->offer_id);
+                $rewardPoins = $rewardPoins + $offer->reward_points;
+            }
+        }
+        return ['checkout_reward_points' => $rewardPoins, 'user_reward_points' => Auth::user()->reward_points];
+    }
+}
+
 
