@@ -86,6 +86,20 @@
                                         <p>{!! $product->detail !!}</p>
 									</div>
 
+                                    @if(Auth::check() && Auth::user()->type == 'wholesaler')
+                                        @if($product->offers)
+                                            @foreach($product->offers as $offer)
+                                                @if($offer->status == 'active')
+                                                    <div class="row">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadio1"  price-product="{{$offer->price * $offer->quantity}}" offer-id="{{$offer->id}}" value="pack">
+                                                            <label class="form-check-label" for="inlineRadio1">Pack of {{$offer->quantity}} @ €{{$offer->price}}/Unit</label>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    @endif
                                     <div class="row">
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadio1"  price-product="{{$product->price}}" value="single" checked>
@@ -96,18 +110,6 @@
                                             <label class="form-check-label" for="inlineRadio2">Pack Of 10</label>
                                         </div>--}}
                                     </div>
-                                    @if(Auth::check() && Auth::user()->type == 'retailer')
-                                        @if($product->offers)
-                                            @foreach($product->offers as $offer)
-                                                <div class="row">
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadio1"  price-product="{{$offer->price * $offer->quantity}}" offer-id="{{$offer->id}}" value="pack">
-                                                        <label class="form-check-label" for="inlineRadio1">Pack of {{$offer->quantity}} @ €{{$offer->price}}/Unit</label>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    @endif
                                     <input id="offer_id" type="hidden" value="" />
 
 
@@ -136,7 +138,7 @@
 										<fieldset>
 											<div class="row-val">
 												<label for="qty">qty</label>
-												<input type="number" id="qty" class="qty" placeholder="1" value="1">
+												<input type="number" id="qty" class="qty" placeholder="1" min="10" value="1" step="10">
 											</div>
 
 											<div class="row-val">

@@ -58,7 +58,12 @@ class CartController extends Controller
                 'value' => addShippingCharges($product,Auth::user()->type)['charges'],
                 'attributes' =>  ['courier_id' => $product->shipping_id]
             ));
-            $price = $product->discountedPrice;
+
+            if(!$request->offerId)
+            {
+                $price = $product->discountedPrice;
+            }
+
             if($request->has('productPack') and $request->productPack ==='pack'){
                 // update quanity and price with offer and without offer
                 if(!$request->offerId)
@@ -113,7 +118,6 @@ class CartController extends Controller
 
     public function cartDetails()
     {
-        
 
         $count          = (Auth::id())?Cart::session(Auth::id())->getContent()->count():Cart::getContent()->count();
         $cartContents   = (Auth::id())?Cart::session(Auth::id())->getContent():Cart::getContent();
@@ -286,13 +290,11 @@ class CartController extends Controller
     public function applyDiscount($cartContents,$originalPrice=0,$subTotal=0)
 
     {
-
         $woriginalPrice=0;
         $wsubtotal=0;
         $temp=0;
 
         foreach($cartContents as $item){
-
             $productDetails = getProductDetails($item->id);
 
             if(Auth::user()->type == 'wholesaler')
@@ -301,8 +303,11 @@ class CartController extends Controller
                 $productPercentaget = ($productDetails->cost * Auth::user()->mark_up/100);
                 $woriginalPrice  += (($productDetails->cost + $productPercentaget) * $item->quantity);
 
-                $item->price=($productDetails->cost + $productPercentaget);
-                $item->cprice= ($productDetails->cost + $productPercentaget);
+                if( !$item->attributes->has('offer_id') )
+                {
+                    $item->price=($productDetails->cost + $productPercentaget);
+                    $item->cprice= ($productDetails->cost + $productPercentaget);
+                }
 
                 if($item->quantity >= $user->quantity_1 && $user->quantity_1  >0 && $user->percentage_1 > 0 )
                 {
