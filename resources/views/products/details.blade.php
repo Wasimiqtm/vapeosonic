@@ -92,24 +92,22 @@
                                                 @if($offer->status == 'active')
                                                     <div class="row">
                                                         <div class="form-check form-check-inline">
-                                                            <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadio1"  price-product="{{$offer->price * $offer->quantity}}" offer-id="{{$offer->id}}" value="pack">
-                                                            <label class="form-check-label" for="inlineRadio1">Pack of {{$offer->quantity}} @ €{{$offer->price}}/Unit</label>
+                                                            <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadio{{$offer->id}}"  price-product="{{$offer->price * $offer->quantity}}" offer-id="{{$offer->id}}" value="pack">
+                                                            <label class="form-check-label" for="inlineRadio{{$offer->id}}">Pack of {{$offer->quantity}} @ €{{$offer->price}}/Unit ({{$offer->reward_points}} Points)</label>
                                                         </div>
                                                     </div>
                                                 @endif
                                             @endforeach
                                         @endif
                                     @endif
+
                                     <div class="row">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadio1"  price-product="{{$product->price}}" value="single" checked>
-                                            <label class="form-check-label" for="inlineRadio1">Single Product</label>
+                                            <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadioSingle"  price-product="{{(Auth::user() && Auth::user()->type == 'wholesaler'? number_format(($product->cost + ($product->cost * Auth::user()->mark_up/100)),2,'.',''):$product->discountedPrice)}}" value="single" checked>
+                                            <label class="form-check-label" for="inlineRadioSingle">Single Product {{Auth::user() && Auth::user()->type == 'wholesaler'?'('.$product->reward_points.' Points)':''}}</label>
                                         </div>
-                                        {{--<div class="form-check form-check-inline">
-                                            <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions"  price-product="{{$product->price*10}}" id="inlineRadio2" value="pack">
-                                            <label class="form-check-label" for="inlineRadio2">Pack Of 10</label>
-                                        </div>--}}
                                     </div>
+
                                     <input id="offer_id" type="hidden" value="" />
 
 
