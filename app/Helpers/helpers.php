@@ -1917,6 +1917,8 @@ if (! function_exists('getRewardDetails')) {
             {
                 $offer = \App\Offer::find($item->attributes->offer_id);
                 $rewardPoins = $rewardPoins + $offer->reward_points;
+            } else {
+                $rewardPoins = Auth::user()->type == 'wholesaler' ? $item->attributes->reward_points * $item->quantity:0;
             }
         }
         return ['checkout_reward_points' => $rewardPoins, 'user_reward_points' => Auth::user()->reward_points];
