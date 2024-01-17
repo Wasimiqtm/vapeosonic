@@ -348,7 +348,7 @@ class Product extends Model
      */
 
     protected $fillable = [
-        'name', 'product_id', 'code', 'ean_number', 'sku', 'shipping_id', 'brand_id', 'supplier_id', 'tax_rate_id', 'type', 'barcode_symbology', 'cost', 'price', 'is_variants', 'discount_type', 'discount', 'detail', 'invoice_detail', 'is_active','is_default','is_main_price','is_main_tax','full_detail','tecnical_specs','new_arrivals','is_featured','is_hot'
+        'name', 'product_id', 'code', 'ean_number', 'sku', 'shipping_id', 'brand_id', 'supplier_id', 'tax_rate_id', 'type', 'barcode_symbology', 'cost', 'price', 'is_variants', 'discount_type', 'discount', 'reward_points', 'detail', 'invoice_detail', 'is_active','is_default','is_main_price','is_main_tax','full_detail','tecnical_specs','new_arrivals','is_featured','is_hot'
         ,'meta_title','meta_description','slug', 'view_retailer', 'view_dropshipper', 'view_wholesaler'
         ];
 

@@ -211,6 +211,13 @@
                                     <div class="help-block with-errors"></div>
                                 </div>
 
+                                <div class="form-group col-md-4 {{ $errors->has('reward_points') ? 'has-error' : '' }}">
+                                    {!! Form::label('reward_points', 'Wholesaler Reward Points', ['class' => 'control-label']) !!}
+                                    {!! Form::number('reward_points', null, ['class' => 'form-control', 'placeholder' => 'Wholesaler Reward Points', 'min' => '0', 'step' => 0.1]) !!}
+                                    {!! $errors->first('reward_points', '<p class="help-block">:message</p>') !!}
+                                    <div class="help-block with-errors"></div>
+                                </div>
+
                             </div>
 
                             <div class="row">
