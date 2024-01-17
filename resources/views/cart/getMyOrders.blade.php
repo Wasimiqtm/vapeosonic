@@ -82,10 +82,15 @@ $vatCharges = getVatCharges();
                 <strong class="product-name">   {{$order_item->quantity}}</strong>
             </div>
             <div class="col-xs-12 col-sm-2">
-                <strong class="product-name"><i class="fa fa-gbp"></i>{{ number_format($item_sub_total,2) }}</strong>
-
-
+                <strong class="product-name">
+                    <i class="fa fa-gbp"></i>{{ number_format($item_sub_total, 2) }}
+                </strong>
+                @if(Auth::user() && Auth::user()->type == 'wholesaler')
+                    <span style="color: green">({{ $order_item->transaction->earned_reward_points }} Earned)</span>
+                    <span style="color: red">({{ $order_item->transaction->used_reward_points }} Used)</span>
+                @endif
             </div>
+
             <div class="col-xs-12 col-sm-2">
                 @if($myOrder->is_refunded == 1)
                     <strong style="color:#5cb85c;">Refunded</strong>

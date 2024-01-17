@@ -80,7 +80,7 @@ class CartController extends Controller
                 'name' => $product->name,
                 'price' => $price,
                 'quantity' => $qty,
-                'attributes' => ($request->offerId)?['offer_id' => $request->offerId]:array(),
+                'attributes' => ($request->offerId)?['offer_id' => $request->offerId]:['reward_points' => $product->reward_points],
                 'conditions' => $shipping
             );
             $cart = ShoppingCart::where(['user_id' => Auth::id(), 'payment_status' => 'pending'])->first();
@@ -1012,7 +1012,7 @@ class CartController extends Controller
     /*my orders details*/
     function getMyOrders(Request $request)
     {
-        $myOrders = Transaction::with(['cart', 'purchasedItems.product.product_images'])->where('user_id', Auth::id())->get();
+        $myOrders = Transaction::with(['cart', 'purchasedItems.product.product_images', 'purchasedItems.transaction'])->where('user_id', Auth::id())->get();
         $getRewardDetails = getRewardDetails();
         return view('cart.getMyOrders', compact('myOrders', 'getRewardDetails'));
     }
