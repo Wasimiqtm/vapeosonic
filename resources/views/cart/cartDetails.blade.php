@@ -88,7 +88,7 @@
     @php
         $vatAmount = 0;
             $pVat = (($subTotal)*$vatCharges)/100;
-            $subTotal=number_format($subTotal,2);
+            //$subTotal=number_format($subTotal,2);
 
     @endphp
 @endif
@@ -126,7 +126,7 @@
         @php
             $discountAmount = number_format($originalPrice - $subTotal,2);
             $vatAmount = number_format(($subTotal*$vatCharges)/100,2);
-            $subTotal=number_format($subTotal+($subTotal*$vatCharges)/100,2) @endphp
+            $subTotal=($subTotal+($subTotal*$vatCharges)/100) @endphp
 
 @endif
 

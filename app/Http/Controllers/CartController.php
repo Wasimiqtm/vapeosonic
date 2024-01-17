@@ -588,7 +588,9 @@ class CartController extends Controller
         $getRewardDetails = getRewardDetails();
 
         /*Proceed to checkout only if the purchase amount is greater than reward amount*/
-        $totalToPay = number_format($subTotal+($subTotal*$vatCharges)/100,2);
+//        $totalToPay = number_format($subTotal+($subTotal*$vatCharges)/100,2);
+        $totalToPay = ($subTotal+($subTotal*$vatCharges)/100);
+
         if($getRewardDetails['user_reward_points'] >= $totalToPay)
         {
             Session::flash('error', 'Your purchase amount should be greater than your wallet amount');

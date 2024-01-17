@@ -157,7 +157,7 @@
 
                                         @php
                                             $pVat = ($subTotal * $vatCharges) / 100;
-                                            $subTotal = number_format($subTotal, 2);
+                                            //$subTotal = number_format($subTotal, 2);
                                         @endphp
 
                                     @else
@@ -191,7 +191,7 @@
                                         @php $discountAmount = number_format(($originalPrice - $cartSum),2);@endphp
                                         @php $vatAmount = number_format(($subTotal*$vatCharges)/100,2);@endphp
 
-                                        @php $subTotal=number_format($subTotal+($subTotal*$vatCharges)/100,2) @endphp
+                                        @php $subTotal=($subTotal+($subTotal*$vatCharges)/100) @endphp
 
                                     @endif
                                     @if ($cartContents->isNotEmpty() && $cartContents->first()->charges_check == 1)
