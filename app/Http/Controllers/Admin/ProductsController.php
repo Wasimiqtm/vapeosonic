@@ -232,6 +232,7 @@ class ProductsController extends Controller
         $requestData['discount_type'] = empty($requestData['discount_type']) ? '0' : $requestData['discount_type'];
         $requestData['discount'] = empty($requestData['discount']) ? 0 : $requestData['discount'];
         $requestData['reward_points'] = empty($requestData['reward_points']) ? 0 : $requestData['reward_points'];
+        $requestData['number_of_packs'] = empty($requestData['number_of_packs']) ? 10 : $requestData['number_of_packs'];
         $requestData['supplier_id'] = empty($requestData['supplier_id']) ? 0 : $requestData['supplier_id'];
         $requestData['brand_id'] = empty($requestData['brand_id']) ? 0 : $requestData['brand_id'];
         $requestData['meta_title'] = $requestData['meta_title'];
@@ -359,6 +360,7 @@ class ProductsController extends Controller
         $requestData['discount_type'] = empty($requestData['discount_type']) ? '0' : $requestData['discount_type'];
         $requestData['discount'] = empty($requestData['discount']) ? 0 : $requestData['discount'];
         $requestData['reward_points'] = empty($requestData['reward_points']) ? 0 : $requestData['reward_points'];
+        $requestData['number_of_packs'] = empty($requestData['number_of_packs']) ? 10 : $requestData['number_of_packs'];
         $requestData['supplier_id'] = empty($requestData['supplier_id']) ? 0 : $requestData['supplier_id'];
         $requestData['brand_id'] = empty($requestData['brand_id']) ? 0 : $requestData['brand_id'];
         $requestData['meta_title'] = $requestData['meta_title'];

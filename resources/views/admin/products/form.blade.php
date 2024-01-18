@@ -221,6 +221,15 @@
                             </div>
 
                             <div class="row">
+                                <div class="form-group col-md-4 {{ $errors->has('number_of_packs') ? 'has-error' : '' }}">
+                                    {!! Form::label('number_of_packs', 'Pack Quantity', ['class' => 'control-label']) !!}
+                                    {!! Form::number('number_of_packs', null, ['class' => 'form-control', 'placeholder' => 'Pack Quantity', 'min' => '1', 'step' => 1]) !!}
+                                    {!! $errors->first('number_of_packs', '<p class="help-block">:message</p>') !!}
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+
+                            <div class="row">
 
                                 <div class="form-group col-md-4 {{ $errors->has('brand_id') ? 'has-error' : '' }}">
                                     {!! Form::label('brand_id', 'Brand Name', ['class' => 'control-label']) !!}
