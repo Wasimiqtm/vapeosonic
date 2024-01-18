@@ -1916,12 +1916,42 @@ if (! function_exists('getRewardDetails')) {
             if($item->attributes->has('offer_id'))
             {
                 $offer = \App\Offer::find($item->attributes->offer_id);
-                $rewardPoins = $rewardPoins + $offer->reward_points;
+                $rewardPoins = $rewardPoins + ($offer->reward_points/$offer->quantity) * $item->quantity;
             } else {
                 $rewardPoins = Auth::user()->type == 'wholesaler' ? $item->attributes->reward_points * $item->quantity:0;
             }
         }
         return ['checkout_reward_points' => $rewardPoins, 'user_reward_points' => Auth::user()->reward_points];
+    }
+}
+
+if (! function_exists('getShippingCharges')) {
+
+
+
+    function getShippingCharges()
+    {
+        $cartContents = (Auth::id())?Cart::session(Auth::id())->getContent():Cart::getContent();
+
+        $shippingChargesAmountCheck = 0;
+        $qty = 0;
+        foreach($cartContents as $product)
+        {
+            $shippingChargesAmountCheck = $shippingChargesAmountCheck + ($product->price * $product->quantity);
+            $qty = $qty + $product->quantity;
+        }
+        
+        if($shippingChargesAmountCheck <= 500)
+        {
+            $shipping = Shipping::whereName('TCS')->first();
+            if($shipping)
+            {
+                $shippingCharges = $shipping->charges;
+            } else {
+                $shippingCharges = 0;
+            }
+            return $shippingCharges * $qty;
+        }
     }
 }
 
