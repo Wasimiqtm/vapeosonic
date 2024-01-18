@@ -224,7 +224,11 @@
                                         <div class="txt-holder">
                                             <strong class="title sub-title pull-left">SHIPPING</strong>
                                             <div class="txt pull-right">
-                                                <span>Free Shipping</span>
+                                                @if(getShippingCharges() > 0)
+                                                    <span><i class="fa fa-gbp"></i> {{ getShippingCharges() }}</span>
+                                                @else
+                                                    <span>Free Shipping</span>
+                                                @endif
                                             </div>
                                         </div>
                                     </li>
@@ -252,7 +256,7 @@
                                         <div class="txt-holder">
                                             <strong class="title sub-title pull-left">ORDER TOTAL</strong>
                                             <div class="txt pull-right">
-                                                <span><i class="fa fa-gbp"></i>  {{($subTotal - $getRewardDetails['user_reward_points'] > 0) ? $subTotal - $getRewardDetails['user_reward_points'] : 0}}</span>
+                                                <span><i class="fa fa-gbp"></i>  {{($subTotal - $getRewardDetails['user_reward_points'] + getShippingCharges() > 0) ? $subTotal - $getRewardDetails['user_reward_points'] + getShippingCharges() : 0}}</span>
                                             </div>
                                         </div>
                                     </li>
@@ -379,7 +383,7 @@
 
         function PayPalPayment() {
             // var amount = "{{ Auth::id() ? Cart::session(Auth::id())->getSubTotal() ?? 0 : 0 }}";
-            var amount = "{{ $subTotal - $getRewardDetails['user_reward_points'] }}";
+            var amount = "{{ $subTotal - $getRewardDetails['user_reward_points'] + getShippingCharges() }}";
             paypal.Buttons({
                 style: {
                     color: 'blue',

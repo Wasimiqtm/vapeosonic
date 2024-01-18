@@ -191,7 +191,13 @@
                         <div class="txt-holder">
                             <strong class="title sub-title pull-left">SHIPPING</strong>
                             <div class="txt pull-right">
-                                <strong>Free Shipping</strong>
+                                <strong>
+                                    @if(getShippingCharges() > 0)
+                                        <i class="fa fa-gbp"></i> {{ getShippingCharges() }}
+                                    @else
+                                        Free Shipping
+                                    @endif
+                                </strong>
                             </div>
                         </div>
                     </li>
@@ -207,7 +213,7 @@
                         <div class="txt-holder">
                             <strong class="title sub-title pull-left">CART TOTAL</strong>
                             <div class="txt pull-right">
-                                <span><i class="fa fa-gbp"></i> {{($subTotal - $getRewardDetails['user_reward_points'] > 0) ? $subTotal - $getRewardDetails['user_reward_points'] : 0}}</span>
+                                <span><i class="fa fa-gbp"></i> {{($subTotal - $getRewardDetails['user_reward_points'] + getShippingCharges() > 0) ? $subTotal - $getRewardDetails['user_reward_points'] + getShippingCharges() : 0}}</span>
                             </div>
                         </div>
                     </li>
