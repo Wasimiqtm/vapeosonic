@@ -70,10 +70,9 @@ class CartController extends Controller
                 } else {
                     $offer = Offer::with('product')->find($request->offerId);
                     $price = $offer->price;
-                    $qty = $offer->quantity * $qty;
+                    //$qty = $offer->quantity * $qty;
                 }
             }
-
 
             $productData = array(
                 'id' => $product->id,
@@ -206,7 +205,7 @@ class CartController extends Controller
             return view('cart.home_cart', compact('vatCharges','cartContents','couriers','total_shipment_charges','cart','count', 'subTotal', 'cartSum', 'originalPrice'));
         }
         $getRewardDetails = getRewardDetails();
-
+        
         return view('cart.cartDetails', compact('vatCharges','couriers','total_shipment_charges','cart','count', 'cartContents', 'subTotal', 'cartSum', 'originalPrice', 'getRewardDetails'));
     }
 
@@ -591,7 +590,7 @@ class CartController extends Controller
 //        $totalToPay = number_format($subTotal+($subTotal*$vatCharges)/100,2);
         $totalToPay = ($subTotal+($subTotal*$vatCharges)/100);
 
-        if($getRewardDetails['user_reward_points'] >= $totalToPay)
+        if($getRewardDetails['user_reward_points'] >= $subTotal)
         {
             Session::flash('error', 'Your purchase amount should be greater than your wallet amount');
             return redirect()->back();
@@ -1015,8 +1014,7 @@ class CartController extends Controller
     function getMyOrders(Request $request)
     {
         $myOrders = Transaction::with(['cart', 'purchasedItems.product.product_images', 'purchasedItems.transaction'])->where('user_id', Auth::id())->get();
-        $getRewardDetails = getRewardDetails();
-        return view('cart.getMyOrders', compact('myOrders', 'getRewardDetails'));
+        return view('cart.getMyOrders', compact('myOrders'));
     }
 
     /*transaction details view*/
