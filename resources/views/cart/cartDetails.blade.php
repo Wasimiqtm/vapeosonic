@@ -32,10 +32,10 @@
                 <strong class="title">PRICE</strong>
             </div>
             <div class="col-xs-12 col-sm-2">
-                <strong class="title">QUANTITY</strong>
+                <strong class="title">TOTAL</strong>
             </div>
             <div class="col-xs-12 col-sm-2">
-                <strong class="title">TOTAL</strong>
+                <strong class="title">Action</strong>
             </div>
         </div>
         @forelse($cartContents as $product)
@@ -51,16 +51,20 @@
             <div class="col-xs-12 col-sm-2">
                 <strong class="price"><i class="fa "></i> {{$product->quantity . ' x £' . $product->price." "}}</strong>
             </div>
-            <div class="col-xs-12 col-sm-2">
+            {{--<div class="col-xs-12 col-sm-2">
                 <div class="quanlity">
                             <span class="btn-down" data-id="product{{$product->id}}" data-product="{{$product->id}}"></span>
                             <input type="text" name="number" class="qty product{{$product->id}}"  data-product="{{$product->id}}" data-quantity="{{getProductQuantity($product->id)}}" value="{{$product->quantity}}" min="1" max="{{getProductQuantity($product->id)}}" placeholder="Quantity" onkeyup="checkToUpdateCart(this)">
                             <span class="btn-up"  data-id="product{{$product->id}}" data-product="{{$product->id}}"></span>
                         </div>
 
-            </div>
+            </div>--}}
             <div class="col-xs-12 col-sm-2">
                 <strong class="price"><i class="fa fa-gbp"></i>  {{$product->price * $product->quantity}}</strong>
+            </div>
+            <?php $slug = (!empty($product->slug)) ? $product->slug : Hashids::encode($product->id); ?>
+            <div class="col-xs-12 col-sm-2">
+                <a href="{{ url('products/'.$slug) }}"><strong class="price"><i class="fa fa-edit"></i>  Update Cart</strong></a>
                 <a href="javascript:void(0)" class="remove-from-cart" data-id="{{$product->id}}"><i class="fa fa-close"></i></a>
             </div>
         </div>
@@ -116,7 +120,7 @@
 @if(Auth::user()->type == 'retailer')
         <?php
         $disc = $originalPrice - $subTotal;
-
+        $originalSubTotal = $subTotal;
         ?>
 
 @endif
@@ -126,6 +130,7 @@
         @php
             $discountAmount = number_format($originalPrice - $subTotal,2);
             $vatAmount = number_format(($subTotal*$vatCharges)/100,2);
+            $originalSubTotal = $subTotal;
             $subTotal=($subTotal+($subTotal*$vatCharges)/100) @endphp
 
 @endif
@@ -166,7 +171,7 @@
                         <div class="txt-holder">
                             <strong class="title sub-title pull-left">Product Total</strong>
                             <div class="txt pull-right">
-                                <span><i class="fa fa-gbp"></i> {{$product->price * $product->quantity}}</span>
+                                <span><i class="fa fa-gbp"></i> {{@$originalSubTotal}}</span>
                             </div>
                         </div>
                     </li>
@@ -193,7 +198,7 @@
                             <div class="txt pull-right">
                                 <strong>
                                     @if(getShippingCharges() > 0)
-                                        <i class="fa fa-gbp"></i> {{ getShippingCharges() }}
+                                        <span><i class="fa fa-gbp"></i> {{ getShippingCharges() }}</span>
                                     @else
                                         Free Shipping
                                     @endif
