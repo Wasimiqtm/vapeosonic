@@ -45,8 +45,13 @@ class CartController extends Controller
                 productDefaultCourier($request->id, $data->shipping_id);
             }
           
-            // set quantity
-            $qty = ($request->quantity)??1;
+            // set quantity when user coming from listing page
+            if(Auth::user()->type == 'wholesaler')
+            {
+                $qty = ($request->quantity)??$product->number_of_packs;
+            } else {
+                $qty = ($request->quantity)??1;
+            }
             // add shipping charges condition
 
             $shipping = new \Darryldecode\Cart\CartCondition(array(
@@ -70,7 +75,7 @@ class CartController extends Controller
                 } else {
                     $offer = Offer::with('product')->find($request->offerId);
                     $price = $offer->price;
-                    //$qty = $offer->quantity * $qty;
+                    $qty = $offer->quantity;
                 }
             }
 
@@ -205,7 +210,7 @@ class CartController extends Controller
             return view('cart.home_cart', compact('vatCharges','cartContents','couriers','total_shipment_charges','cart','count', 'subTotal', 'cartSum', 'originalPrice'));
         }
         $getRewardDetails = getRewardDetails();
-        
+
         return view('cart.cartDetails', compact('vatCharges','couriers','total_shipment_charges','cart','count', 'cartContents', 'subTotal', 'cartSum', 'originalPrice', 'getRewardDetails'));
     }
 
