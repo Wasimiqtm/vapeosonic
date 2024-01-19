@@ -55,7 +55,7 @@
                                 <div class="form-group">
                                     <select class="form-control">
                                         <option value="1">Select Country</option>
-                                        <option value="1">USA</option>
+                                        {{--<option value="1">USA</option>--}}
                                         <option value="1">UK</option>
                                     </select>
                                 </div>
