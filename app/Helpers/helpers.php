@@ -1934,14 +1934,14 @@ if (! function_exists('getShippingCharges')) {
         $cartContents = (Auth::id())?Cart::session(Auth::id())->getContent():Cart::getContent();
 
         $shippingChargesAmountCheck = 0;
-        $qty = 0;
+//        $qty = 0;
         foreach($cartContents as $product)
         {
             $shippingChargesAmountCheck = $shippingChargesAmountCheck + ($product->price * $product->quantity);
-            $qty = $qty + $product->quantity;
+//            $qty = $qty + $product->quantity;
         }
         
-        if($shippingChargesAmountCheck <= 500)
+        if($shippingChargesAmountCheck < 500)
         {
             $shipping = Shipping::whereName('TCS')->first();
             if($shipping)
@@ -1950,7 +1950,8 @@ if (! function_exists('getShippingCharges')) {
             } else {
                 $shippingCharges = 0;
             }
-            return $shippingCharges * $qty;
+//            return $shippingCharges * $qty;
+            return $shippingCharges;
         }
     }
 }
