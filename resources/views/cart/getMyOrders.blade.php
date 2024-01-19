@@ -83,11 +83,11 @@ $vatCharges = getVatCharges();
             </div>
             <div class="col-xs-12 col-sm-2">
                 <strong class="product-name">
-                    <i class="fa fa-gbp"></i>{{ number_format($item_sub_total, 2) }} (<i class="fa fa-gbp"></i>{{$order_item->transaction->amount - $item_sub_total}})
+                    <i class="fa fa-gbp"></i>{{ number_format($item_sub_total, 2) }} (<i class="fa fa-gbp"></i>Shipping Charges {{$order_item->transaction->amount - $item_sub_total}})
                 </strong>
                 @if(Auth::user() && Auth::user()->type == 'wholesaler')
-                    <span style="color: green">({{ $order_item->transaction->earned_reward_points }} Earned)</span>
-                    <span style="color: red">({{ $order_item->transaction->used_reward_points }} Used)</span>
+                    <span style="color: green">(New earned reward points - {{ $order_item->transaction->earned_reward_points }})</span>
+                    <span style="color: red">(Previous used reward points - {{ $order_item->transaction->used_reward_points }})</span>
                 @endif
             </div>
 
