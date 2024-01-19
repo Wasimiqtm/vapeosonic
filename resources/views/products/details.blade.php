@@ -93,7 +93,7 @@
                                                     <div class="row">
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadio{{$offer->id}}"  price-product="{{$offer->price * $offer->quantity}}" offer-id="{{$offer->id}}" value="pack">
-                                                            <label class="form-check-label" for="inlineRadio{{$offer->id}}">Pack of {{$offer->quantity}} @ €{{$offer->price}}/Unit ({{$offer->reward_points}} Points)</label>
+                                                            <label class="form-check-label" for="inlineRadio{{$offer->id}}">{{$offer->quantity}}Units @ €{{$offer->price}}/Unit - Earn {{$offer->reward_points}} Points</label>
                                                         </div>
                                                     </div>
                                                 @endif
@@ -104,7 +104,7 @@
                                     @if(Auth::user() && Auth::user()->type == 'wholesaler')
                                         <div class="row">
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadioSingle"  price-product="{{(Auth::user() && Auth::user()->type == 'wholesaler'? number_format(($product->cost + ($product->cost * Auth::user()->mark_up/100)),2,'.',''):$product->discountedPrice)}}" value="single" checked>
+                                                <input class="form-check-input changeProductPack" type="radio" name="inlineRadioOptions" id="inlineRadioSingle"  price-product="{{(Auth::user() && Auth::user()->type == 'wholesaler'? number_format((($product->cost + ($product->cost * Auth::user()->mark_up/100)) * $product->number_of_packs),2,'.',''):$product->discountedPrice)}}" value="single" checked>
                                                 <label class="form-check-label" for="inlineRadioSingle">Pack of {{$product->number_of_packs}} ({{$product->reward_points * $product->number_of_packs}}) Points</label>
                                             </div>
                                         </div>
@@ -124,7 +124,7 @@
                                         @if(Auth::check() && Auth::guard('web')->check() && Auth::user()->type != 'retailer')
                                             @if(Auth::user()->type == 'wholesaler')
                                                     <?php $totalPercent = ($product->cost * Auth::user()->mark_up/100);?>
-                                                    <i class="fa fa-gbp" id="product-price">{{number_format(($product->cost + $totalPercent),2,'.','') }}</i>
+                                                    <i class="fa fa-gbp" id="product-price">{{number_format((($product->cost + $totalPercent) * $product->number_of_packs),2,'.','') }}</i>
                                             @else
                                                     <i class="fa fa-gbp" id="product-price">{{ $product->discountedPrice }} </i>
                                             @endif

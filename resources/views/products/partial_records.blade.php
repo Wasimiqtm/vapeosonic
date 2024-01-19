@@ -37,7 +37,8 @@
                                         <?php $totalPercent = ($product->cost * Auth::user()->mark_up / 100); ?>
 
                                     <i class="fa fa-gbp"> </i>
-                                    <span>{{number_format(($product->cost + $totalPercent),2,'.','') }}</span>
+                                    <span>{{number_format(($product->cost + $totalPercent),2,'.','') }} ({{$product->reward_points}} Reward Points)</span>
+                                    <span>Min. Qty - {{$product->number_of_packs}}</span>
 
                                 @else
 
