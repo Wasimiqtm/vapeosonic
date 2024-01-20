@@ -276,9 +276,9 @@
             e.preventDefault();
             var slug = $(this).attr('data-slug');
             var id = $(this).attr('data-id');
-            show_loader();
             // delete item and redirect to update cart
             if(typeof slug === "string"){
+                show_loader();
                 $.ajax({
                     url: '{{ url('cart-remove') }}',
                     method: "DELETE",
@@ -297,6 +297,7 @@
             } else {
                 // delete item from cart
                 if(confirm("Are you sure you want to delete this item ?")) {
+                    show_loader();
                     $.ajax({
                         url: '{{ url('cart-remove') }}',
                         method: "DELETE",
