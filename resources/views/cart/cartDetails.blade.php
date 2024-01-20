@@ -64,7 +64,7 @@
             </div>
             <?php $slug = (!empty($product->slug)) ? $product->slug : Hashids::encode($product->id); ?>
             <div class="col-xs-12 col-sm-2">
-                <a href="{{ url('products/'.$slug) }}"><strong class="price"><i class="fa fa-edit"></i>  Update Cart</strong></a>
+                <a href="javascript:void(0)" class="remove-from-cart" data-id="{{$product->id}}" data-slug="{{$slug}}"><strong class="price"><i class="fa fa-edit"></i>  Update Cart</strong></a>
                 <a href="javascript:void(0)" class="remove-from-cart" data-id="{{$product->id}}"><i class="fa fa-close"></i></a>
             </div>
         </div>
@@ -274,23 +274,18 @@
         // remove cart item
         $(".remove-from-cart").click(function (e) {
             e.preventDefault();
-            var ele = $(this);
-            if(confirm("Are you sure you want to delete this item ?")) {
-                var id = $(this).attr('data-id');
-                show_loader();
+            var slug = $(this).attr('data-slug');
+            var id = $(this).attr('data-id');
+            show_loader();
+            // delete item and redirect to update cart
+            if(typeof slug === "string"){
                 $.ajax({
                     url: '{{ url('cart-remove') }}',
                     method: "DELETE",
                     data: {id: id},
                     success: function (response) {
-
-
                         if(response.status) {
-                            $('body').find('.cartCount').text(response.cartTotal);
-
-                            success_message("Item removed from cart successfully");
-                            hide_loader();
-                            getCartDetails();
+                            window.location.href = "{{ url('products') }}" + '/' + "{{ $slug }}";
                         } else {
                             $('body').find('.cartCount').text(response.cartTotal);
                             getCartDetails();
@@ -299,9 +294,31 @@
                         }
                     }
                 });
+            } else {
+                // delete item from cart
+                if(confirm("Are you sure you want to delete this item ?")) {
+                    $.ajax({
+                        url: '{{ url('cart-remove') }}',
+                        method: "DELETE",
+                        data: {id: id},
+                        success: function (response) {
+                            if(response.status) {
+                                $('body').find('.cartCount').text(response.cartTotal);
+                                success_message("Item removed from cart successfully");
+                                hide_loader();
+                                getCartDetails();
+                            } else {
+                                $('body').find('.cartCount').text(response.cartTotal);
+                                getCartDetails();
+                                hide_loader();
+                                toastr.error(response.message);
+                            }
+                        }
+                    });
+                }
             }
+            return false;
         });
-
     });
 
     function checkToUpdateCart(event){
