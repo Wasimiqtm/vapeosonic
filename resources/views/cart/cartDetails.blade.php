@@ -274,10 +274,12 @@
         // remove cart item
         $(".remove-from-cart").click(function (e) {
             e.preventDefault();
+            var ele = $(this);
             var slug = $(this).attr('data-slug');
-            var id = $(this).attr('data-id');
+
             // delete item and redirect to update cart
             if(typeof slug === "string"){
+                var id = $(this).attr('data-id');
                 show_loader();
                 $.ajax({
                     url: '{{ url('cart-remove') }}',
@@ -285,7 +287,7 @@
                     data: {id: id},
                     success: function (response) {
                         if(response.status) {
-                            window.location.href = "{{ url('products') }}" + '/' + "{{ $slug }}";
+                            window.location.href = "{{ url('products') }}" + '/' + slug;
                         } else {
                             $('body').find('.cartCount').text(response.cartTotal);
                             getCartDetails();
@@ -297,6 +299,7 @@
             } else {
                 // delete item from cart
                 if(confirm("Are you sure you want to delete this item ?")) {
+                    var id = $(this).attr('data-id');
                     show_loader();
                     $.ajax({
                         url: '{{ url('cart-remove') }}',

@@ -3,7 +3,8 @@
 
 
         @forelse($products as $product)
-                <?php $slug = (!empty($product->slug)) ? $product->slug : Hashids::encode($product->id); ?>
+                <?php /*$slug = (!empty($product->slug)) ? $product->slug : Hashids::encode($product->id);*/ ?>
+                <?php $slug = Hashids::encode($product->id); ?>
 
             <li>
                 <!-- mt product1 large start here -->
