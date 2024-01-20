@@ -144,7 +144,7 @@
 										<fieldset>
 											<div class="row-val">
 												<label for="qty">qty</label>
-												<input type="number" id="qty" class="qty" placeholder="{{Auth::user() && Auth::user()->type == 'wholesaler' ? $product->number_of_packs : 1}}" min="{{Auth::user() && Auth::user()->type == 'wholesaler' ? $product->number_of_packs : 1}}" value="{{Auth::user() && Auth::user()->type == 'wholesaler' ? $product->number_of_packs : 1}}" step="{{Auth::user() && Auth::user()->type == 'wholesaler' ? $product->number_of_packs : 1}}">
+												<input type="number" id="qty" class="qty" placeholder="{{Auth::user() && Auth::user()->type == 'wholesaler' ? $product->number_of_packs : 1}}" min="{{Auth::user() && Auth::user()->type == 'wholesaler' ? $product->number_of_packs : 1}}" value="{{Auth::user() && Auth::user()->type == 'wholesaler' ? $product->number_of_packs : 1}}" step="{{Auth::user() && Auth::user()->type == 'wholesaler' ? $product->number_of_packs : 1}}" oninput="onInput(event)">
 											</div>
 
 											<div class="row-val">
@@ -466,6 +466,10 @@
                 var id = $(this).attr('data-id');
                 var offerId = $("#offer_id").val();
                 var qty = $('.qty').val();
+                // qty must be greater than 1
+                if(qty < 1) {
+                    return false;
+                }
                 var productPack = $(".changeProductPack:checked").val();
 
                 // show_loader();
@@ -596,6 +600,20 @@
         }
     });*/
 }
+
+        // restrict user to manually enter qty
+        function onInput(event) {
+            // Prevent manual input by setting the input value to the previous valid value
+            var input = event.target;
+            var currentValue = parseInt(input.value, 10);
+            var step = parseInt(input.step, 10);
+
+            // Check if the value is a multiple of the step
+            if (currentValue % step !== 0) {
+                // Round down to the nearest multiple of the step
+                input.value = Math.ceil(currentValue / step) * step;
+            }
+        }
 
     </script>
 @endsection
